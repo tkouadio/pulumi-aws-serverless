@@ -17,6 +17,10 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      # Installe la CLI Pulumi pour utiliser `pulumi stack ...`
+      - uses: pulumi/setup-pulumi@v3
+
+      # Init/Select stack + config région
       - name: Init/Select Stack
         run: |
           pulumi stack select dev || pulumi stack init dev
@@ -24,12 +28,14 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
+      # Déploiement
       - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
           command: up
           stack-name: dev
-          args: --yes
+          refresh: true           
+          message: "CI deploy"   
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

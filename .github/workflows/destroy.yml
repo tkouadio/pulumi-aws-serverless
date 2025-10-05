@@ -13,11 +13,11 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
-      - uses: pulumi/actions@v4
-        with:
-          command: version
+      - uses: pulumi/setup-pulumi@v3
       - name: Select Stack
-        run: pulumi stack select dev
+        run: |
+          pulumi stack select dev
+          pulumi config set aws:region $AWS_REGION --stack dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Pulumi Destroy
@@ -25,7 +25,8 @@ jobs:
         with:
           command: destroy
           stack-name: dev
-          args: --yes
+          refresh: true
+          message: "CI destroy"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
