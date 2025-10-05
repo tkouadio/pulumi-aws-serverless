@@ -12,7 +12,7 @@ def handler(event, context):
     method = event.get("requestContext", {}).get("http", {}).get("method","GET")
 
     if method == "POST":
-        item = {"id": str(int(time.time())), "Message": "Hello from Pulumi + DynamoDB!"}
+        item = {"id": str(int(time.time())), "Message": "Hello MGL869 from Pulumi + DynamoDB!"}
         table.put_item(Item=item)
         return respond(200, {"ok": True, "saved": item})
 
