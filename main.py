@@ -61,7 +61,7 @@ integration = aws.apigatewayv2.Integration(
     "lambdaIntegration",
     api_id=api.id,
     integration_type="AWS_PROXY",
-    integration_uri=lambda_fn.arn,
+    integration_uri=lambda_fn.invoke_arn,
     payload_format_version="2.0"
 )
 
