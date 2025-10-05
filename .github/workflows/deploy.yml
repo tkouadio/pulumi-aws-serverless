@@ -17,25 +17,18 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      # Install Pulumi CLI
-      - uses: pulumi/setup-pulumi@v4
-
-      # Init/Select stack + set region
-      - name: Init/Select Stack
-        run: |
-          pulumi stack select dev || pulumi stack init dev
-          pulumi config set aws:region $AWS_REGION --stack dev
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      # Deployement
+      # Déploiement Pulumi (CLI auto-installée par l'action)
       - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
           command: up
-          stack-name: dev
-          refresh: true
+          stack-name: dev              # sélectionne la stack
+          upsert: true                 # la crée si elle n'existe pas
+          refresh: true                # équivaut à --refresh
           message: "CI deploy"
+          # pose la config (remplace 'pulumi config set aws:region ...')
+          config-map: |
+            {"aws:region":"${{ env.AWS_REGION }}"}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
