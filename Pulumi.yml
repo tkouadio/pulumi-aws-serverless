@@ -1,0 +1,6 @@
+name: pulumi-aws-serverless
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description:  Demo IaC avec Pulumi :  API Gateway + Lambda + DynamoDB
