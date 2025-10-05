@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
     steps:
       - uses: actions/checkout@v4
 
@@ -17,18 +18,30 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-        # Configure AWS creds
+      # 1) AWS creds + région pour le runner/SDK
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # Vérifier l'identité AWS pour diagnostiquer
-      - name: Check AWS identity
-        run: aws sts get-caller-identity
+      # 2) Installer explicitement la CLI Pulumi (pour utiliser `pulumi config set` ensuite)
+      - name: Install Pulumi CLI
+        run: |
+          curl -fsSL https://get.pulumi.com | sh
+          echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
+          pulumi version
 
-      # Déploiement Pulumi
+      # 3) Créer/sélectionner la stack et ÉCRIRE la région dans la config
+      - name: Init stack & set region
+        run: |
+          pulumi stack select dev || pulumi stack init dev
+          pulumi config set aws:region $AWS_REGION --stack dev
+          pulumi config --show-secrets --stack dev
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # 4) Déploiement (l'action installe aussi la CLI, mais on l'a déjà)
       - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
@@ -37,7 +50,8 @@ jobs:
           upsert: true
           refresh: true
           message: "CI deploy"
-          config-map: |
-            {"aws:region":"${{ env.AWS_REGION }}"}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

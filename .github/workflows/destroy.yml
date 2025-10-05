@@ -7,12 +7,33 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Pulumi CLI
+        run: |
+          curl -fsSL https://get.pulumi.com | sh
+          echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
+          pulumi version
+
+      - name: Ensure stack & region
+        run: |
+          pulumi stack select dev
+          pulumi config set aws:region $AWS_REGION --stack dev
+          pulumi config --stack dev
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Pulumi Destroy
         uses: pulumi/actions@v4
@@ -21,10 +42,8 @@ jobs:
           stack-name: dev
           refresh: true
           message: "CI destroy"
-          # (facultatif) si la stack peut ne pas exister la première fois
-          upsert: false
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          AWS_REGION: ${{ env.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ env.AWS_REGION }}
