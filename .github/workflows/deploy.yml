@@ -28,7 +28,7 @@ jobs:
       - name: Check AWS identity
         run: aws sts get-caller-identity
 
-      # Déploiement Pulumi (CLI auto-installée par l'action)
+      # Déploiement Pulumi
       - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
