@@ -7,8 +7,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      AWS_REGION: us-east-1
-      AWS_DEFAULT_REGION: us-east-1
+      AWS_REGION: us-east-2
+      AWS_DEFAULT_REGION: us-east-2
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +32,7 @@ jobs:
           echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
           pulumi version
 
-      # Créer/sélectionner la stack et ÉCRIRE la région dans la config
+      # Créer/sélectionner la stack et ecrire la région dans la config
       - name: Init stack & set region
         run: |
           pulumi stack select dev || pulumi stack init dev
