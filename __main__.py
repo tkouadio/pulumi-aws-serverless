@@ -54,7 +54,7 @@ lambda_fn = aws.lambda_.Function(
     memory_size=256,
 )
 
-# 4) API Gateway v2 (HTTP API) + intégration Lambda
+# 4)API Gateway v2 (HTTP API) + intégration Lambda
 api = aws.apigatewayv2.Api("httpApi", protocol_type="HTTP")
 
 integration = aws.apigatewayv2.Integration(
