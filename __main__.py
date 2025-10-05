@@ -3,7 +3,7 @@ import pulumi
 import pulumi_aws as aws
 from pulumi import FileArchive, Output
 
-# 1) DynamoDB (on-demand, parfait Free Tier)
+# DynamoDB
 table = aws.dynamodb.Table(
     "messages",
     attributes=[aws.dynamodb.TableAttributeArgs(name="id", type="S")],
@@ -11,7 +11,7 @@ table = aws.dynamodb.Table(
     billing_mode="PAY_PER_REQUEST"
 )
 
-# 2) IAM Role pour Lambda
+# IAM Role pour Lambda
 assume_role = aws.iam.get_policy_document(statements=[aws.iam.GetPolicyDocumentStatementArgs(
     effect="Allow",
     principals=[aws.iam.GetPolicyDocumentStatementPrincipalArgs(
@@ -40,7 +40,7 @@ aws.iam.RolePolicyAttachment("ddbAccessAttach",
     role=lambda_role.name,
     policy_arn=ddb_policy.arn)
 
-# 3) Lambda (code = dossier app/)
+# Lambda handler
 lambda_fn = aws.lambda_.Function(
     "apiHandler",
     role=lambda_role.arn,
@@ -54,7 +54,7 @@ lambda_fn = aws.lambda_.Function(
     memory_size=256,
 )
 
-# 4)API Gateway v2 (HTTP API) + intégration Lambda
+# API Gateway v2 (HTTP API) + intégration Lambda
 api = aws.apigatewayv2.Api("httpApi", protocol_type="HTTP")
 
 integration = aws.apigatewayv2.Integration(
@@ -85,7 +85,7 @@ stage = aws.apigatewayv2.Stage(
     auto_deploy=True
 )
 
-# 5) Permission pour que l’API invoque Lambda
+# Permission pour que l’API invoque Lambda
 invoke_perm = aws.lambda_.Permission(
     "apiInvokePermission",
     action="lambda:InvokeFunction",
@@ -94,6 +94,6 @@ invoke_perm = aws.lambda_.Permission(
     source_arn=api.execution_arn.apply(lambda arn: f"{arn}/*/*")
 )
 
-# 6) Exports visibles dans les logs du pipeline
+# Exports des Outputs
 pulumi.export("endpoint_url", api.api_endpoint)
 pulumi.export("table_name", table.name)

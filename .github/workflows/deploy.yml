@@ -18,21 +18,21 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      # 1) AWS creds + région pour le runner/SDK
+      # AWS creds + région pour le runner/SDK
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # 2) Installer explicitement la CLI Pulumi (pour utiliser `pulumi config set` ensuite)
+      # Installer la CLI Pulumi
       - name: Install Pulumi CLI
         run: |
           curl -fsSL https://get.pulumi.com | sh
           echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
           pulumi version
 
-      # 3) Créer/sélectionner la stack et ÉCRIRE la région dans la config
+      # Créer/sélectionner la stack et ÉCRIRE la région dans la config
       - name: Init stack & set region
         run: |
           pulumi stack select dev || pulumi stack init dev
@@ -41,7 +41,7 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
-      # 4) Déploiement (l'action installe aussi la CLI, mais on l'a déjà)
+      # Déploiement
       - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
