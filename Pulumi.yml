@@ -3,4 +3,4 @@ runtime:
   name: python
   options:
     virtualenv: venv
-description:  Demo IaC avec Pulumi :  API Gateway + Lambda + DynamoDB
+description:  Demo IaC avec Pulumi +  API Gateway + Lambda + DynamoDB

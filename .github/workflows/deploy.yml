@@ -17,10 +17,6 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - uses: pulumi/actions@v4
-        with:
-          command: version
-
       - name: Init/Select Stack
         run: |
           pulumi stack select dev || pulumi stack init dev
