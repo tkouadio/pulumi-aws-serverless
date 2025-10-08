@@ -16,6 +16,5 @@ def handler(event, context):
         table.put_item(Item=item)
         return respond(200, {"ok": True, "saved": item})
 
-    # GET: lire 5 items
     resp = table.scan(Limit=5)
     return respond(200, {"items": resp.get("Items", [])})

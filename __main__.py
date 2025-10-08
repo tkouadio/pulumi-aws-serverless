@@ -3,7 +3,6 @@ import pulumi
 import pulumi_aws as aws
 from pulumi import FileArchive, Output
 
-# DynamoDB
 table = aws.dynamodb.Table(
     "messages",
     attributes=[aws.dynamodb.TableAttributeArgs(name="id", type="S")],
@@ -11,7 +10,6 @@ table = aws.dynamodb.Table(
     billing_mode="PAY_PER_REQUEST"
 )
 
-# IAM Role pour Lambda
 assume_role = aws.iam.get_policy_document(statements=[aws.iam.GetPolicyDocumentStatementArgs(
     effect="Allow",
     principals=[aws.iam.GetPolicyDocumentStatementPrincipalArgs(
@@ -20,12 +18,10 @@ assume_role = aws.iam.get_policy_document(statements=[aws.iam.GetPolicyDocumentS
 )])
 lambda_role = aws.iam.Role("lambdaRole", assume_role_policy=assume_role.json)
 
-# Logs CloudWatch
 aws.iam.RolePolicyAttachment("lambdaBasicExec",
     role=lambda_role.name,
     policy_arn="arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole")
 
-# Accès DynamoDB (PutItem/Scan/GetItem)
 ddb_policy = aws.iam.Policy("ddbAccessPolicy",
     policy=Output.all(table.arn).apply(lambda args: json.dumps({
         "Version": "2012-10-17",
@@ -40,7 +36,6 @@ aws.iam.RolePolicyAttachment("ddbAccessAttach",
     role=lambda_role.name,
     policy_arn=ddb_policy.arn)
 
-# Lambda handler
 lambda_fn = aws.lambda_.Function(
     "apiHandler",
     role=lambda_role.arn,
@@ -54,7 +49,6 @@ lambda_fn = aws.lambda_.Function(
     memory_size=256,
 )
 
-# API Gateway v2 (HTTP API) + intégration Lambda
 api = aws.apigatewayv2.Api("httpApi", protocol_type="HTTP")
 
 integration = aws.apigatewayv2.Integration(
@@ -85,7 +79,6 @@ stage = aws.apigatewayv2.Stage(
     auto_deploy=True
 )
 
-# Permission pour que l’API invoque Lambda
 invoke_perm = aws.lambda_.Permission(
     "apiInvokePermission",
     action="lambda:InvokeFunction",
@@ -94,6 +87,5 @@ invoke_perm = aws.lambda_.Permission(
     source_arn=api.execution_arn.apply(lambda arn: f"{arn}/*/*")
 )
 
-# Exports des Outputs
 pulumi.export("endpoint_url", api.api_endpoint)
 pulumi.export("table_name", table.name)
