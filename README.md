@@ -136,6 +136,7 @@ Ce projet démontre :
 * les bonnes pratiques DevOps modernes
 
 👤 Auteur
+
 Thierry Kouadio
 Maîtrise en génie logiciel
 Projet académique – DevOps / Infrastructure as Code
