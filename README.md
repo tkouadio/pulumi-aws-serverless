@@ -2,12 +2,14 @@
 
 ## 📌 Contexte
 
-Ce projet est réalisé dans le cadre d’un **cours DevOps (MGL869)** à la **maîtrise en génie logiciel**.
+Ce projet est réalisé dans le cadre du **cours l’ingénierie de mise en production des versions logicielles (MGL869)** à la **maîtrise en génie logiciel**.
 Il a pour objectif de démontrer concrètement les principes de **Infrastructure as Code (IaC)** et de **CI/CD** à l’aide de **Pulumi** et d’**AWS**.
 
 Le projet illustre la chaîne DevOps complète :
 
 > **commit → pipeline CI/CD → infrastructure cloud déployée automatiquement**
+
+---
 
 ## 🎯 Objectifs du projet
 
@@ -15,6 +17,8 @@ Le projet illustre la chaîne DevOps complète :
 * Déployer automatiquement l’infrastructure via un **pipeline CI/CD**.
 * Mettre en œuvre une architecture **serverless** moderne.
 * Comparer implicitement l’approche Pulumi avec Terraform et Ansible (présentés par d’autres membres de l’équipe).
+
+---
 
 ## 🏗️ Architecture déployée
 
@@ -31,6 +35,8 @@ L’infrastructure AWS créée par Pulumi comprend :
 
 L’ensemble est déployé et détruit automatiquement par **Pulumi via GitHub Actions**.
 
+---
+
 ## ⚙️ Technologies utilisées
 
 * **Pulumi** (IaC)
@@ -39,19 +45,25 @@ L’ensemble est déployé et détruit automatiquement par **Pulumi via GitHub A
 * **GitHub Actions** (CI/CD)
 * **Pulumi Cloud** (state backend & stack management)
 
+---
+
 ## 📁 Structure du projet
 
-- app/
-  - lambda_handler.py          # Code de la fonction Lambda
-- __main__.py                  # Définition de l’infrastructure Pulumi
-- Pulumi.yaml                  # Configuration du projet Pulumi
-- requirements.txt             # Dépendances Python
-- .github/
-  - workflows/
-    - deploy.yml               # Pipeline CI/CD de déploiement
-    - destroy.yml              # Pipeline CI/CD de destruction
-- README.md
+```text
+.
+├── app/
+│   └── lambda_handler.py      # Code de la fonction Lambda
+├── __main__.py                # Définition de l’infrastructure Pulumi
+├── Pulumi.yaml                # Configuration du projet Pulumi
+├── requirements.txt           # Dépendances Python
+├── .github/
+│   └── workflows/
+│       ├── deploy.yml         # Pipeline CI/CD de déploiement
+│       └── destroy.yml        # Pipeline CI/CD de destruction
+└── README.md
+```
 
+---
 
 ## 🔁 Workflow CI/CD
 
@@ -68,6 +80,8 @@ Le pipeline **deploy.yml** est déclenché à chaque `push` sur la branche `main
 
 ➡️ L’infrastructure est automatiquement **créée ou mise à jour**.
 
+---
+
 ### Destruction de l’infrastructure
 
 Le pipeline **destroy.yml** est déclenché manuellement (`workflow_dispatch`) :
@@ -75,6 +89,8 @@ Le pipeline **destroy.yml** est déclenché manuellement (`workflow_dispatch`) :
 * Exécution de `pulumi destroy`
 * Suppression complète des ressources AWS
 * Le **stack Pulumi reste présent**, mais sans ressources (comportement normal)
+
+---
 
 ## 📤 Outputs Pulumi
 
@@ -88,6 +104,7 @@ Ces outputs sont visibles :
 * dans les logs du pipeline CI/CD
 * dans l’interface **Pulumi Cloud**
 
+---
 
 ## 🧪 Tester l’API
 
@@ -105,6 +122,8 @@ curl -X POST https://<endpoint_url>
 
 Les données sont stockées dans DynamoDB et retournées via l’API.
 
+---
+
 ## 🔐 Gestion des secrets
 
 Les secrets sont gérés via :
@@ -118,6 +137,8 @@ Les secrets sont gérés via :
 
 Aucun secret n’est stocké en clair dans le dépôt.
 
+---
+
 ## 💡 Pourquoi Pulumi ?
 
 * Utilisation de **langages de programmation complets** (Python)
@@ -125,6 +146,8 @@ Aucun secret n’est stocké en clair dans le dépôt.
 * **Multi-cloud**
 * Intégration native avec les pipelines CI/CD
 * Approche “**Infrastructure as Software**”
+
+---
 
 ## 📚 Apports pédagogiques
 
@@ -135,8 +158,12 @@ Ce projet démontre :
 * la convergence entre **développement logiciel** et **infrastructure**
 * les bonnes pratiques DevOps modernes
 
-👤 Auteur
+---
 
-Konan Thierry Kouadio
-Maîtrise en génie logiciel
-Projet académique – DevOps / Infrastructure as Code
+## 👤 Auteur
+
+**Thierry Kouadio**
+; Maîtrise en génie logiciel
+; Projet académique – DevOps / Infrastructure as Code
+
+
