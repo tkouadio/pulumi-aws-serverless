@@ -138,5 +138,7 @@ Ce projet démontre :
 👤 Auteur
 
 Thierry Kouadio
+
 Maîtrise en génie logiciel
+
 Projet académique – DevOps / Infrastructure as Code
