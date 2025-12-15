@@ -134,3 +134,8 @@ Ce projet démontre :
 * l’automatisation complète du cycle de vie
 * la convergence entre **développement logiciel** et **infrastructure**
 * les bonnes pratiques DevOps modernes
+
+👤 Auteur
+Thierry Kouadio
+Maîtrise en génie logiciel
+Projet académique – DevOps / Infrastructure as Code
